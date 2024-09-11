@@ -27,17 +27,14 @@ import consulo.project.Project;
  * Time: 19:24:26
  * To change this template use File | Settings | File Templates.
  */
-public class JSWithTryFinallySurrounder extends JSWithTryCatchFinallySurrounder
-{
-	@Override
-	public String getTemplateDescription()
-	{
-		return JavaScriptLocalize.javascriptSurroundWithTryFinally().get();
-	}
+public class JSWithTryFinallySurrounder extends JSWithTryCatchFinallySurrounder {
+    @Override
+    public String getTemplateDescription() {
+        return JavaScriptLocalize.javascriptSurroundWithTryFinally().get();
+    }
 
-	@Override
-	protected String getStatementTemplate(final Project project, PsiElement context)
-	{
-		return "try { } finally { }";
-	}
+    @Override
+    protected String getStatementTemplate(final Project project, PsiElement context) {
+        return "try { } finally { }";
+    }
 }

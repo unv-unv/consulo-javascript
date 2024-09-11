@@ -28,30 +28,25 @@ import consulo.language.psi.PsiElement;
  * Time: 14:15:25
  * To change this template use File | Settings | File Templates.
  */
-public class JSWithBlockSurrounder extends JSStatementSurrounder
-{
-	@Override
-	public String getTemplateDescription()
-	{
-		return "{ }";
-	}
+public class JSWithBlockSurrounder extends JSStatementSurrounder {
+    @Override
+    public String getTemplateDescription() {
+        return "{ }";
+    }
 
-	@Override
-	protected String getStatementTemplate(final Project project, PsiElement context)
-	{
-		return "{ }";
-	}
+    @Override
+    protected String getStatementTemplate(final Project project, PsiElement context) {
+        return "{ }";
+    }
 
-	@Override
-	protected ASTNode getInsertBeforeNode(final ASTNode statementNode)
-	{
-		return statementNode.getLastChildNode();
-	}
+    @Override
+    protected ASTNode getInsertBeforeNode(final ASTNode statementNode) {
+        return statementNode.getLastChildNode();
+    }
 
-	@Override
-	protected TextRange getSurroundSelectionRange(final ASTNode statementNode)
-	{
-		int endOffset = statementNode.getTextRange().getEndOffset();
-		return new TextRange(endOffset, endOffset);
-	}
+    @Override
+    protected TextRange getSurroundSelectionRange(final ASTNode statementNode) {
+        int endOffset = statementNode.getTextRange().getEndOffset();
+        return new TextRange(endOffset, endOffset);
+    }
 }

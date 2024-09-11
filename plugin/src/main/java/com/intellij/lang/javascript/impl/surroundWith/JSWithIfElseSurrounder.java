@@ -27,17 +27,14 @@ import consulo.project.Project;
  * Time: 17:48:14
  * To change this template use File | Settings | File Templates.
  */
-public class JSWithIfElseSurrounder extends JSWithIfSurrounder
-{
-	@Override
-	public String getTemplateDescription()
-	{
-		return JavaScriptLocalize.javascriptSurroundWithIfElse().get();
-	}
+public class JSWithIfElseSurrounder extends JSWithIfSurrounder {
+    @Override
+    public String getTemplateDescription() {
+        return JavaScriptLocalize.javascriptSurroundWithIfElse().get();
+    }
 
-	@Override
-	protected String getStatementTemplate(final Project project, PsiElement context)
-	{
-		return "if (a) { } else { }";
-	}
+    @Override
+    protected String getStatementTemplate(final Project project, PsiElement context) {
+        return "if (a) { } else { }";
+    }
 }

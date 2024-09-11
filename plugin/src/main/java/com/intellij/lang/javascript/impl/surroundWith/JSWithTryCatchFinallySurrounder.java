@@ -35,53 +35,44 @@ import org.jetbrains.annotations.NonNls;
  * Time: 19:21:52
  * To change this template use File | Settings | File Templates.
  */
-public class JSWithTryCatchFinallySurrounder extends JSStatementSurrounder
-{
-	@Override
-	public String getTemplateDescription()
-	{
-		return JavaScriptLocalize.javascriptSurroundWithTryCatchFinally().get();
-	}
+public class JSWithTryCatchFinallySurrounder extends JSStatementSurrounder {
+    @Override
+    public String getTemplateDescription() {
+        return JavaScriptLocalize.javascriptSurroundWithTryCatchFinally().get();
+    }
 
-	@Override
-	@NonNls
-	protected String getStatementTemplate(final Project project, PsiElement context)
-	{
-		return "try { } catch(e" + getExceptionVarTypeBasedOnContext(context) + ") { } finally { }";
-	}
+    @Override
+    @NonNls
+    protected String getStatementTemplate(final Project project, PsiElement context) {
+        return "try { } catch(e" + getExceptionVarTypeBasedOnContext(context) + ") { } finally { }";
+    }
 
-	protected static String getExceptionVarTypeBasedOnContext(@Nonnull PsiElement context)
-	{
-		if(context.getContainingFile().getLanguage() == JavaScriptSupportLoader.ECMA_SCRIPT_L4)
-		{
-			return ":Error";
-		}
-		return "";
-	}
+    protected static String getExceptionVarTypeBasedOnContext(@Nonnull PsiElement context) {
+        if (context.getContainingFile().getLanguage() == JavaScriptSupportLoader.ECMA_SCRIPT_L4) {
+            return ":Error";
+        }
+        return "";
+    }
 
-	@Override
-	protected ASTNode getInsertBeforeNode(final ASTNode statementNode)
-	{
-		JSTryStatement stmt = (JSTryStatement) statementNode.getPsi();
-		return stmt.getStatement().getLastChild().getNode();
-	}
+    @Override
+    protected ASTNode getInsertBeforeNode(final ASTNode statementNode) {
+        JSTryStatement stmt = (JSTryStatement)statementNode.getPsi();
+        return stmt.getStatement().getLastChild().getNode();
+    }
 
-	@Override
-	protected TextRange getSurroundSelectionRange(final ASTNode statementNode)
-	{
-		JSTryStatement stmt = (JSTryStatement) statementNode.getPsi();
-		final JSCatchBlock catchBlock = stmt.getCatchBlock();
-		if(catchBlock != null)
-		{
-			int offset = catchBlock.getStatement().getFirstChild().getNode().getStartOffset() + 1;
-			return new TextRange(offset, offset);
-		}
-		final JSStatement finallyStmt = stmt.getFinallyStatement();
-		if(finallyStmt != null)
-		{
-			int offset = finallyStmt.getFirstChild().getNode().getStartOffset() + 1;
-			return new TextRange(offset, offset);
-		}
-		return null;
-	}
+    @Override
+    protected TextRange getSurroundSelectionRange(final ASTNode statementNode) {
+        JSTryStatement stmt = (JSTryStatement)statementNode.getPsi();
+        final JSCatchBlock catchBlock = stmt.getCatchBlock();
+        if (catchBlock != null) {
+            int offset = catchBlock.getStatement().getFirstChild().getNode().getStartOffset() + 1;
+            return new TextRange(offset, offset);
+        }
+        final JSStatement finallyStmt = stmt.getFinallyStatement();
+        if (finallyStmt != null) {
+            int offset = finallyStmt.getFirstChild().getNode().getStartOffset() + 1;
+            return new TextRange(offset, offset);
+        }
+        return null;
+    }
 }

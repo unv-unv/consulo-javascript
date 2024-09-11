@@ -31,36 +31,31 @@ import org.jetbrains.annotations.NonNls;
  * Time: 16:33:55
  * To change this template use File | Settings | File Templates.
  */
-public class JSWithIfSurrounder extends JSStatementSurrounder
-{
-	@Override
-	public String getTemplateDescription()
-	{
-		return JavaScriptLocalize.javascriptSurroundWithIf().get();
-	}
+public class JSWithIfSurrounder extends JSStatementSurrounder {
+    @Override
+    public String getTemplateDescription() {
+        return JavaScriptLocalize.javascriptSurroundWithIf().get();
+    }
 
-	@Override
-	@NonNls
-	protected String getStatementTemplate(final Project project, PsiElement context)
-	{
-		return "if(a) { }";
-	}
+    @Override
+    @NonNls
+    protected String getStatementTemplate(final Project project, PsiElement context) {
+        return "if(a) { }";
+    }
 
-	@Override
-	protected ASTNode getInsertBeforeNode(final ASTNode statementNode)
-	{
-		JSIfStatement stmt = (JSIfStatement) statementNode.getPsi();
-		return stmt.getThen().getNode().getLastChildNode();
-	}
+    @Override
+    protected ASTNode getInsertBeforeNode(final ASTNode statementNode) {
+        JSIfStatement stmt = (JSIfStatement)statementNode.getPsi();
+        return stmt.getThen().getNode().getLastChildNode();
+    }
 
-	@Override
-	protected TextRange getSurroundSelectionRange(final ASTNode statementNode)
-	{
-		JSIfStatement stmt = (JSIfStatement) statementNode.getPsi();
-		ASTNode conditionNode = stmt.getCondition().getNode();
-		int offset = conditionNode.getStartOffset();
-		stmt.getNode().removeChild(conditionNode);
+    @Override
+    protected TextRange getSurroundSelectionRange(final ASTNode statementNode) {
+        JSIfStatement stmt = (JSIfStatement)statementNode.getPsi();
+        ASTNode conditionNode = stmt.getCondition().getNode();
+        int offset = conditionNode.getStartOffset();
+        stmt.getNode().removeChild(conditionNode);
 
-		return new TextRange(offset, offset);
-	}
+        return new TextRange(offset, offset);
+    }
 }

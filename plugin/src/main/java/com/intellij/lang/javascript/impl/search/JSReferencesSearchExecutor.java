@@ -33,41 +33,39 @@ import consulo.language.psi.search.ReferencesSearchQueryExecutor;
 
 /**
  * @author Maxim.Mossienko
- *         Date: Apr 28, 2008
- *         Time: 8:34:20 PM
+ * Date: Apr 28, 2008
+ * Time: 8:34:20 PM
  */
 @ExtensionImpl
-public class JSReferencesSearchExecutor implements ReferencesSearchQueryExecutor
-{
-	@Override
-	public boolean execute(final ReferencesSearch.SearchParameters queryParameters, final Processor<? super PsiReference> consumer)
-	{
-		final PsiElement sourceElement = queryParameters.getElementToSearch();
+public class JSReferencesSearchExecutor implements ReferencesSearchQueryExecutor {
+    @Override
+    public boolean execute(final ReferencesSearch.SearchParameters queryParameters, final Processor<? super PsiReference> consumer) {
+        final PsiElement sourceElement = queryParameters.getElementToSearch();
 
-		if(sourceElement instanceof PsiNamedElement &&
-				sourceElement.getLanguage().isKindOf(JavaScriptLanguage.INSTANCE) &&
-				queryParameters.getScope() instanceof GlobalSearchScope &&
-				!(sourceElement.getUseScope() instanceof LocalSearchScope))
-		{
-			final String s = ReadAction.compute(() -> ((PsiNamedElement) sourceElement).getName());
-			if(s == null)
-			{
-				return true;
-			}
-			PsiSearchHelper.SERVICE.getInstance(sourceElement.getProject()).processAllFilesWithWordInLiterals(s, GlobalSearchScope.getScopeRestrictedByFileTypes(GlobalSearchScope.projectScope
-					(sourceElement.getProject()), JavaScriptFileType.INSTANCE), new Processor<PsiFile>()
-			{
-				@Override
-				public boolean process(final PsiFile psiFile)
-				{
-					/*if(psiFile.getLanguage() == JavaScriptSupportLoader.JSON)
-					{
-						ReferencesSearch.search(sourceElement, new LocalSearchScope(psiFile)).forEach(consumer);
-					}         */
-					return true;
-				}
-			});
-		}
-		return true;
-	}
+        if (sourceElement instanceof PsiNamedElement &&
+            sourceElement.getLanguage().isKindOf(JavaScriptLanguage.INSTANCE) &&
+            queryParameters.getScope() instanceof GlobalSearchScope &&
+            !(sourceElement.getUseScope() instanceof LocalSearchScope)) {
+            final String s = ReadAction.compute(() -> ((PsiNamedElement)sourceElement).getName());
+            if (s == null) {
+                return true;
+            }
+            PsiSearchHelper.SERVICE.getInstance(sourceElement.getProject())
+                .processAllFilesWithWordInLiterals(
+                    s,
+                    GlobalSearchScope.getScopeRestrictedByFileTypes(
+                        GlobalSearchScope.projectScope(sourceElement.getProject()),
+                        JavaScriptFileType.INSTANCE
+                    ),
+                    psiFile -> {
+                        /*if(psiFile.getLanguage() == JavaScriptSupportLoader.JSON)
+                        {
+                            ReferencesSearch.search(sourceElement, new LocalSearchScope(psiFile)).forEach(consumer);
+                        }*/
+                        return true;
+                    }
+                );
+        }
+        return true;
+    }
 }

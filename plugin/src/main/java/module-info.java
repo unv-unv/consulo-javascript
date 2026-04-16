@@ -7,6 +7,16 @@ open module consulo.javascript {
     requires transitive consulo.javascript.base.impl;
 
     requires consulo.language.editor.impl;
+    requires consulo.language.editor.refactoring.api;
+    requires consulo.language.editor.ui.api;
+    requires consulo.language.copyright.api;
+    requires consulo.language.impl;
+    requires consulo.project.ui.view.api;
+    requires consulo.ui.ex.api;
+    requires consulo.usage.api;
+    requires consulo.find.api;
+    requires consulo.ide.api;
+    requires consulo.language.code.style.ui.api;
 
     requires com.intellij.xml.api;
     requires com.intellij.xml.editor.api;

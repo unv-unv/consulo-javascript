@@ -28,13 +28,17 @@ import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnAction;
 import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.AnActionWithAsyncUpdate;
+import consulo.ui.ex.action.AnActionWithSyncUpdate;
+import consulo.ui.ex.action.coroutine.ActionSafeReadLock;
+import consulo.util.concurrent.coroutine.Coroutine;
 import consulo.virtualFileSystem.VirtualFile;
 
 /**
  * @author Maxim.Mossienko
  * @since 2008-07-19
  */
-abstract class BaseJSGenerateAction extends AnAction {
+abstract class BaseJSGenerateAction extends AnAction implements AnActionWithAsyncUpdate {
     @Override
     @RequiredUIAccess
     public void actionPerformed(AnActionEvent e) {
@@ -54,27 +58,28 @@ abstract class BaseJSGenerateAction extends AnAction {
     protected abstract JavaScriptGenerateAccessorHandler.GenerationMode getGenerationMode();
 
     @Override
-    @RequiredUIAccess
-    public void update(AnActionEvent e) {
-        VirtualFile file = e.getData(PlatformDataKeys.VIRTUAL_FILE);
+    public Coroutine<?, ?> updateAsync(AnActionEvent e) {
+        return ActionSafeReadLock.run(e, presentation -> {
+            VirtualFile file = e.getData(PlatformDataKeys.VIRTUAL_FILE);
 
-        boolean status = false;
+            boolean status = false;
 
-        if (file != null) {
-            if (file.getFileType() == JavaScriptFileType.INSTANCE) {
-                Editor editor = e.getData(PlatformDataKeys.EDITOR);
-                PsiFile psifile = e.getData(LangDataKeys.PSI_FILE);
+            if (file != null) {
+                if (file.getFileType() == JavaScriptFileType.INSTANCE) {
+                    Editor editor = e.getData(PlatformDataKeys.EDITOR);
+                    PsiFile psifile = e.getData(LangDataKeys.PSI_FILE);
 
-                if (editor != null && psifile != null) {
-                    status = psifile.getLanguage() == JavaScriptSupportLoader.ECMA_SCRIPT_L4;
+                    if (editor != null && psifile != null) {
+                        status = psifile.getLanguage() == JavaScriptSupportLoader.ECMA_SCRIPT_L4;
+                    }
+                }
+                else if (JavaScriptSupportLoader.isFlexMxmFile(file)) {
+                    status = true;
                 }
             }
-            else if (JavaScriptSupportLoader.isFlexMxmFile(file)) {
-                status = true;
-            }
-        }
 
-        e.getPresentation().setEnabled(status);
-        e.getPresentation().setVisible(status);
+            e.getPresentation().setEnabled(status);
+            e.getPresentation().setVisible(status);
+        }).toCoroutine();
     }
 }
